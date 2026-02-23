@@ -1,0 +1,10 @@
+transformers
+datasets
+rouge-score
+pandas
+torch
+sentencepiece
+accelerate
+scipy
+scikit-learn
+ipykernel
