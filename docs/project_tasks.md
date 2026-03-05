@@ -1,10 +1,10 @@
 # Task 6: Question Answering with Transformers Project Checklist
 
 ## Phase I: Project Initialization and Setup
-- [ ] Initialize Python virtual environment and set up project directory structure.
-- [ ] Create `requirements.txt` with necessary libraries: `transformers`, `tokenizers`, `pandas`, `torch` or `tensorflow`, `datasets`.
-- [ ] Set up tracking/logging mechanisms (e.g., simple python logging or MLflow).
-- [ ] Create initial configuration file (e.g., `config.yaml` or `config.json`) for model paths and hyperparameters.
+- [x] Initialize Python virtual environment and set up project directory structure.
+- [x] Create `requirements.txt` with necessary libraries: `transformers`, `tokenizers`, `pandas`, `torch` or `tensorflow`, `datasets`.
+- [x] Set up tracking/logging mechanisms (e.g., simple python logging or MLflow).
+- [x] Create initial configuration file (e.g., `config.yaml` or `config.json`) for model paths and hyperparameters.
 
 ## Phase II: Data Acquisition and Preparation
 - [ ] Load the SQuAD v1.1 Dataset from Hugging Face `datasets` library or direct download from Kaggle/Stanford.

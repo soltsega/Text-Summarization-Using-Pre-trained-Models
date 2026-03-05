@@ -1,0 +1,17 @@
+model:
+  name: "distilbert-base-cased-distilled-squad"
+  max_length: 384
+  doc_stride: 128
+  
+data:
+  dataset_name: "squad"
+  batch_size: 16
+  
+training:
+  learning_rate: 3e-5
+  num_epochs: 3
+  weight_decay: 0.01
+
+logging:
+  log_level: "INFO"
+  tracking_uri: "./mlruns"
