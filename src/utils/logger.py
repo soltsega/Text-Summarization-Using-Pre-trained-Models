@@ -1,7 +1,7 @@
 import logging
 import sys
 
-def get_logger(name="QA_Project"):
+def get_logger(name="Summarization_Project"):
     logger = logging.getLogger(name)
     if not logger.handlers:
         logger.setLevel(logging.INFO)
@@ -15,7 +15,7 @@ def get_logger(name="QA_Project"):
         logger.addHandler(console_handler)
         
         # File Handler
-        file_handler = logging.FileHandler("qa_project.log")
+        file_handler = logging.FileHandler("summarization_project.log")
         file_handler.setFormatter(formatter)
         logger.addHandler(file_handler)
         

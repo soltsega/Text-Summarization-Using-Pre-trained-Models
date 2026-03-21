@@ -1,17 +1,18 @@
 model:
-  name: "distilbert-base-cased-distilled-squad"
-  max_length: 384
-  doc_stride: 128
+  name: "facebook/bart-base"
+  max_input_length: 1024
+  max_output_length: 128
   
 data:
-  dataset_name: "squad"
-  batch_size: 16
+  dataset_name: "cnn_dailymail"
+  dataset_config: "3.0.0"
+  batch_size: 8
   
 training:
-  learning_rate: 3e-5
+  learning_rate: 2e-5
   num_epochs: 3
   weight_decay: 0.01
 
 logging:
   log_level: "INFO"
-  tracking_uri: "./mlruns"
+  project_name: "Summarization_Project"

@@ -1,33 +1,28 @@
-# Task 6: Question Answering with Transformers Project Checklist
+# Text Summarization Project Checklist
 
 ## Phase I: Project Initialization and Setup
 - [x] Initialize Python virtual environment and set up project directory structure.
-- [x] Create `requirements.txt` with necessary libraries: `transformers`, `tokenizers`, `pandas`, `torch` or `tensorflow`, `datasets`.
-- [x] Set up tracking/logging mechanisms (e.g., simple python logging or MLflow).
-- [x] Create initial configuration file (e.g., `config.yaml` or `config.json`) for model paths and hyperparameters.
+- [x] Create `requirements.txt` with necessary libraries: `transformers`, `pandas`, `torch`, `datasets`, `evaluate`, `rouge_score`.
+- [x] Set up tracking/logging mechanisms (Python logging).
+- [x] Create initial configuration file (`config.yaml`) for summarization models.
 
 ## Phase II: Data Acquisition and Preparation
-- [ ] Load the SQuAD v1.1 Dataset from Hugging Face `datasets` library or direct download from Kaggle/Stanford.
-- [ ] Perform exploratory data analysis (EDA) using `pandas` to understand context lengths, question types, and answer locations.
-- [ ] Implement data preprocessing scripts to handle tokenization using Hugging Face `tokenizers`.
-- [ ] Handle max token length limits: implement logic to split long contexts (sliding window approach) or truncate strings.
-- [ ] Map answer character spans to token spans for model training/evaluation.
+- [ ] Load the CNN/DailyMail dataset from Hugging Face `datasets` library.
+- [ ] Perform exploratory data analysis (EDA) using `pandas` to understand document and summary lengths.
+- [ ] Implement data preprocessing scripts for tokenization and formatting.
+- [ ] Handle max token length: implement truncation or sliding window if necessary.
 
 ## Phase III: Model Setup and Inference Pipeline
-- [ ] Select and load a pre-trained Transformer Model fined-tuned for QA (e.g., `bert-base-uncased-squad` or `distilbert-base-cased-distilled-squad`).
-- [ ] Construct the inference pipeline that tokenizes a (context, question) pair.
-- [ ] Implement PyTorch/TensorFlow logic to feed inputs into the model and retrieve start & end logits.
-- [ ] Develop span extraction logic: find the most probable start and end token indices from the logits.
-- [ ] Convert the extracted token span back into the readable string answer.
+- [ ] Load a pre-trained Transformer model for summarization (e.g., `facebook/bart-base`).
+- [ ] Construct the inference pipeline using Hugging Face's `pipeline`.
+- [ ] Implement generation with decoding parameters (max length, min length, beam search).
+- [ ] Extract and decode summaries from model outputs.
 
-## Phase IV: Evaluation Strategy implementation
-- [ ] Implement standard QA metrics:
-  - [ ] Exact Match (EM) evaluation calculation.
-  - [ ] F1 Score evaluation calculation.
-- [ ] Run evaluation on the full SQuAD v1.1 validation dataset.
+## Phase IV: Evaluation Strategy Implementation
+- [ ] Implement ROUGE score calculation (ROUGE-1, ROUGE-2, ROUGE-L).
+- [ ] Run evaluation on a subset of the validation/test dataset.
 - [ ] Document model performance metrics.
 
-## Phase V: Bonus Features & User Interface
-- [ ] Compare alternative base models (e.g., RoBERTa, ALBERT, ELECTRA) with the baseline BERT/DistilBERT approach and log performance differences.
-- [ ] Develop a Streamlit application or an interactive Command Line Interface (CLI) allowing users to dynamically input a passage and ask multiple questions about it.
-- [ ] Document final findings and how to run the project in `README.md`.
+## Phase V: User Interface
+- [ ] Develop a Streamlit application for users to input text and generate summaries.
+- [ ] Document final findings and usage in `README.md`.
