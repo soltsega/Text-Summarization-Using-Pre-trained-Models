@@ -1,0 +1,18 @@
+model:
+  name: "facebook/bart-base"
+  max_input_length: 1024
+  max_output_length: 128
+  
+data:
+  dataset_name: "cnn_dailymail"
+  dataset_config: "3.0.0"
+  batch_size: 8
+  
+training:
+  learning_rate: 2e-5
+  num_epochs: 3
+  weight_decay: 0.01
+
+logging:
+  log_level: "INFO"
+  project_name: "Summarization_Project"
