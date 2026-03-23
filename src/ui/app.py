@@ -1,7 +1,7 @@
 import streamlit as st
 import yaml
 import os
-from transformers import pipeline
+from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, pipeline
 import torch
 from pathlib import Path
 import PyPDF2
@@ -17,25 +17,13 @@ st.set_page_config(
 
 # Load CSS
 def local_css(file_name):
-    with open(file_name) as f:
-        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+    if os.path.exists(file_name):
+        with open(file_name) as f:
+            st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 # Try to load local CSS if it exists
 css_path = Path(__file__).parent / "style.css"
-if css_path.exists():
-    local_css(str(css_path))
-else:
-    # Fallback minimal CSS if file not found
-    st.markdown("""
-    <style>
-    .main {
-        background-color: #f5f7f9;
-    }
-    .stTextArea textarea {
-        border-radius: 10px;
-    }
-    </style>
-    """, unsafe_allow_html=True)
+local_css(str(css_path))
 
 # File Parsers
 def extract_text_from_pdf(file):
@@ -83,7 +71,7 @@ models_list = [
 selected_model = st.sidebar.selectbox(
     "Select Model",
     models_list,
-    index=1 # Default to large cnn for better results
+    index=1 # Default to large cnn
 )
 
 st.sidebar.markdown("---")
@@ -97,12 +85,18 @@ num_beams = st.sidebar.slider("Number of Beams", 1, 10, 4)
 @st.cache_resource
 def load_summarizer(model_name):
     device = 0 if torch.cuda.is_available() else -1
-    return pipeline("summarization", model=model_name, device=device)
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
+    return pipeline("summarization", model=model, tokenizer=tokenizer, device=device)
 
 with st.sidebar:
     with st.spinner(f"Loading {selected_model}..."):
-        summarizer = load_summarizer(selected_model)
-    st.success(f"Model loaded!")
+        try:
+            summarizer = load_summarizer(selected_model)
+            st.success(f"Model loaded!")
+        except Exception as e:
+            st.error(f"Failed to load model: {e}")
+            st.stop()
 
 # Main UI
 st.title("✨ SummarizeAI")
@@ -122,14 +116,18 @@ with tab1:
 with tab2:
     uploaded_file = st.file_uploader("Upload a document", type=["txt", "pdf", "docx"])
     if uploaded_file is not None:
-        if uploaded_file.name.endswith(".txt"):
-            input_text = uploaded_file.read().decode("utf-8")
-        elif uploaded_file.name.endswith(".pdf"):
-            input_text = extract_text_from_pdf(uploaded_file)
-        elif uploaded_file.name.endswith(".docx"):
-            input_text = extract_text_from_docx(uploaded_file)
+        try:
+            if uploaded_file.name.endswith(".txt"):
+                input_text = uploaded_file.read().decode("utf-8")
+            elif uploaded_file.name.endswith(".pdf"):
+                input_text = extract_text_from_pdf(uploaded_file)
+            elif uploaded_file.name.endswith(".docx"):
+                input_text = extract_text_from_docx(uploaded_file)
+        except Exception as e:
+            st.error(f"Failed to read file: {e}")
         
-        st.text_area("File Content Preview:", value=input_text, height=200, disabled=True)
+        if input_text:
+            st.text_area("File Content Preview:", value=input_text, height=200, disabled=True)
 
 # Generation Section
 if st.button("Generate Summary", type="primary"):
@@ -167,7 +165,7 @@ if st.button("Generate Summary", type="primary"):
                 st.info(f"Summary length: {len(summary_text.split())} words | Original length: {len(input_text.split())} words")
                 
             except Exception as e:
-                status.update(label="Error occurred", state="error")
+                status.update(label="Error occurred during summarization", state="error")
                 st.error(f"Details: {e}")
 
 # Footer
