@@ -3,3 +3,9 @@ docs/task_description.txt
 docs/Transformer_QA_Architecture (1).pdf
 venv/
 notebooks/eda.py
+# Model caches
+**/hub/
+**/models--*
+.cache/
+docs/project_tasks.md
+docs/project_tasks.md

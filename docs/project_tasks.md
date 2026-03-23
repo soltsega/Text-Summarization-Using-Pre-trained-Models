@@ -7,16 +7,17 @@
 - [x] Create initial configuration file (`config.yaml`) for summarization models.
 
 ## Phase II: Data Acquisition and Preparation
-- [ ] Load the CNN/DailyMail dataset from Hugging Face `datasets` library.
-- [ ] Perform exploratory data analysis (EDA) using `pandas` to understand document and summary lengths.
-- [ ] Implement data preprocessing scripts for tokenization and formatting.
-- [ ] Handle max token length: implement truncation or sliding window if necessary.
+- [x] Load the CNN/DailyMail dataset from Hugging Face `datasets` library.
+- [x] Perform exploratory data analysis (EDA) using `pandas` to understand document and summary lengths.
+- [x] Implement data preprocessing scripts for tokenization and formatting.
+- [x] Handle max token length: implement truncation or sliding window if necessary.
 
 ## Phase III: Model Setup and Inference Pipeline
-- [ ] Load a pre-trained Transformer model for summarization (e.g., `facebook/bart-base`).
-- [ ] Construct the inference pipeline using Hugging Face's `pipeline`.
-- [ ] Implement generation with decoding parameters (max length, min length, beam search).
-- [ ] Extract and decode summaries from model outputs.
+- [x] Load a pre-trained Transformer model for summarization (e.g., `facebook/bart-base`).
+- [x] Construct the inference pipeline using Hugging Face's `pipeline`.
+- [x] Implement generation with decoding parameters (max length, min length, beam search).
+- [x] Extract and decode summaries from model outputs.
+- [x] Created `notebooks/inference_pipeline.ipynb` with detailed explanations.
 
 ## Phase IV: Evaluation Strategy Implementation
 - [ ] Implement ROUGE score calculation (ROUGE-1, ROUGE-2, ROUGE-L).
