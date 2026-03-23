@@ -1,7 +1,7 @@
 import streamlit as st
 import yaml
 import os
-from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, pipeline
+from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 import torch
 from pathlib import Path
 import PyPDF2
@@ -81,19 +81,20 @@ max_len = st.sidebar.slider("Max Length", 50, 500, config['model']['max_output_l
 min_len = st.sidebar.slider("Min Length", 10, 100, 30)
 num_beams = st.sidebar.slider("Number of Beams", 1, 10, 4)
 
-# Load model and pipeline (cached)
+# Load model and tokenizer (cached)
 @st.cache_resource
-def load_summarizer(model_name):
-    device = 0 if torch.cuda.is_available() else -1
+def load_model_and_tokenizer(model_name):
+    # Using raw model loading to bypass pipeline task errors
+    device = "cuda" if torch.cuda.is_available() else "cpu"
     tokenizer = AutoTokenizer.from_pretrained(model_name)
-    model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
-    return pipeline("summarization", model=model, tokenizer=tokenizer, device=device)
+    model = AutoModelForSeq2SeqLM.from_pretrained(model_name).to(device)
+    return model, tokenizer, device
 
 with st.sidebar:
     with st.spinner(f"Loading {selected_model}..."):
         try:
-            summarizer = load_summarizer(selected_model)
-            st.success(f"Model loaded!")
+            model, tokenizer, device = load_model_and_tokenizer(selected_model)
+            st.success(f"Model loaded on {device}!")
         except Exception as e:
             st.error(f"Failed to load model: {e}")
             st.stop()
@@ -136,19 +137,27 @@ if st.button("Generate Summary", type="primary"):
     else:
         with st.status("Summarizing text...", expanded=True) as status:
             try:
-                st.write("Processing input...")
-                summary = summarizer(
-                    input_text,
+                st.write("Tokenizing input...")
+                inputs = tokenizer(
+                    input_text, 
+                    return_tensors="pt", 
+                    max_length=1024, 
+                    truncation=True
+                ).to(device)
+                
+                st.write("Generating summary (this may take a few seconds)...")
+                summary_ids = model.generate(
+                    inputs["input_ids"],
                     max_length=max_len,
                     min_length=min_len,
                     num_beams=num_beams,
-                    do_sample=False,
-                    truncation=True
+                    early_stopping=True
                 )
+                
                 status.update(label="Summary Generated!", state="complete", expanded=False)
                 
                 st.markdown("### 🎯 Summary Output")
-                summary_text = summary[0]['summary_text']
+                summary_text = tokenizer.decode(summary_ids[0], skip_special_tokens=True)
                 st.markdown(f"> {summary_text}")
                 
                 # Action Buttons
