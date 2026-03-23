@@ -20,8 +20,8 @@
 - [x] Created `notebooks/inference_pipeline.ipynb` with detailed explanations.
 
 ## Phase IV: Evaluation Strategy Implementation
-- [ ] Implement ROUGE score calculation (ROUGE-1, ROUGE-2, ROUGE-L).
-- [ ] Run evaluation on a subset of the validation/test dataset.
+- [x] Implement ROUGE score calculation (ROUGE-1, ROUGE-2, ROUGE-L).
+- [/] Run evaluation on a subset of the validation/test dataset.
 - [ ] Document model performance metrics.
 
 ## Phase V: User Interface
