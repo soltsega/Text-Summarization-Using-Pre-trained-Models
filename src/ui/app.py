@@ -71,20 +71,19 @@ models_list = [
 selected_model = st.sidebar.selectbox(
     "Select Model",
     models_list,
-    index=1 # Default to large cnn
+    index=1 # Default to large cnn (much better!)
 )
 
 st.sidebar.markdown("---")
 st.sidebar.subheader("Inference Parameters")
 
-max_len = st.sidebar.slider("Max Length", 50, 500, config['model']['max_output_length'])
-min_len = st.sidebar.slider("Min Length", 10, 100, 30)
+max_len = st.sidebar.slider("Max Length", 10, 500, config['model']['max_output_length'])
+min_len = st.sidebar.slider("Min Length", 5, 100, 20)
 num_beams = st.sidebar.slider("Number of Beams", 1, 10, 4)
 
 # Load model and tokenizer (cached)
 @st.cache_resource
 def load_model_and_tokenizer(model_name):
-    # Using raw model loading to bypass pipeline task errors
     device = "cuda" if torch.cuda.is_available() else "cpu"
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     model = AutoModelForSeq2SeqLM.from_pretrained(model_name).to(device)
@@ -138,6 +137,10 @@ if st.button("Generate Summary", type="primary"):
         with st.status("Summarizing text...", expanded=True) as status:
             try:
                 st.write("Tokenizing input...")
+                # Add prefix for T5 if selected (though we mostly use BART)
+                if "t5" in selected_model.lower():
+                    input_text = "summarize: " + input_text
+                
                 inputs = tokenizer(
                     input_text, 
                     return_tensors="pt", 
@@ -151,6 +154,8 @@ if st.button("Generate Summary", type="primary"):
                     max_length=max_len,
                     min_length=min_len,
                     num_beams=num_beams,
+                    no_repeat_ngram_size=3,
+                    length_penalty=2.0,
                     early_stopping=True
                 )
                 
